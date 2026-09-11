@@ -15,46 +15,72 @@
         <h1>StudyFocus</h1>
         <p class="subtitle">Stay focused. Avoid distractions.</p>
 
-        <div class="mode-card">
-            <div>
-                <h2>Study Mode</h2>
-                <p id="mode-status">Currently OFF</p>
-            </div>
-
-            <label class="switch">
-                <input type="checkbox" id="study-mode">
-                <span class="slider"></span>
-            </label>
+        <!-- Shown ONLY when the user is not logged in -->
+        <div id="auth-prompt" class="auth-prompt">
+            <p class="auth-message">Log in to sync your blocked sites across devices.</p>
+            <button id="login-button">
+                Login / Register
+            </button>
         </div>
 
-        <div class="stats">
-            <div class="stat-box">
-                <span id="blocked-count">0</span>
-                <p>Blocked Sites</p>
+        <!-- Shown ONLY when the user is logged in -->
+        <div id="app-content" class="app-content hidden">
+
+            <div class="user-bar">
+                <span id="user-email"></span>
+                <button id="logout-button">Logout</button>
             </div>
 
-            <div class="stat-box">
-                <span id="session-status">Inactive</span>
-                <p>Session</p>
-            </div>
-        </div>
+            <div class="mode-card">
+                <div>
+                    <h2>Study Mode</h2>
+                    <p id="mode-status">Currently OFF</p>
+                </div>
 
-        <div class="section">
-            <h3>Blocked Websites</h3>
-
-            <div class="website-input">
-                <input
-                    type="text"
-                    id="website-input"
-                    placeholder="example.com"
-                >
-
-                <button id="add-website">Add</button>
+                <label class="switch">
+                    <input type="checkbox" id="study-mode">
+                    <span class="slider"></span>
+                </label>
             </div>
 
-            <ul id="website-list">
-                <!-- Websites will be added here using JavaScript -->
-            </ul>
+            <div class="stats">
+
+                <div class="stat-box">
+                    <span id="blocked-count">0</span>
+                    <p>Blocked Sites</p>
+                </div>
+
+                <div class="stat-box">
+                    <span id="session-status">Inactive</span>
+                    <p>Session</p>
+                </div>
+
+            </div>
+
+            <div class="section">
+
+                <h3>Blocked Websites</h3>
+
+                <div class="website-input">
+
+                    <input
+                        type="text"
+                        id="website-input"
+                        placeholder="example.com"
+                    >
+
+                    <button id="add-website">
+                        Add
+                    </button>
+
+                </div>
+
+                <ul id="website-list">
+                    <!-- Websites will be added here using JavaScript -->
+                </ul>
+
+            </div>
+
         </div>
 
     </div>
