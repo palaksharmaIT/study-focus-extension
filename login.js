@@ -44,10 +44,24 @@ loginForm.addEventListener("submit", async (event) => {
 
         await chrome.storage.local.set({
             accessToken: data.access,
-            refreshToken: data.refresh
+            refreshToken: data.refresh,
+            userName: username
         });
 
-        alert("Login successful!");
+        errorMessage.textContent = "";
+
+        const successMessage = document.getElementById("success-message");
+        if (successMessage) {
+            successMessage.textContent = "Login successful! Closing this tab...";
+        }
+
+        // The extension popup can't be force-opened from a regular tab
+        // (Chrome blocks that for security), so we close this tab instead.
+        // Next time the user clicks the extension icon, checkAuthAndLoad()
+        // in popup.js will see the saved token and show the dashboard.
+        setTimeout(() => {
+            window.close();
+        }, 1200);
 
     } catch (error) {
         console.error("Login error:", error);

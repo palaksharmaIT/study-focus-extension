@@ -10,7 +10,7 @@ const sessionStatus = document.getElementById("session-status");
 
 const loginButton = document.getElementById("login-button");
 const logoutButton = document.getElementById("logout-button");
-const userEmailLabel = document.getElementById("user-email");
+const userNameLabel = document.getElementById("user-email");
 
 const authPrompt = document.getElementById("auth-prompt");
 const appContent = document.getElementById("app-content");
@@ -75,7 +75,7 @@ if (logoutButton) {
 
         await chrome.storage.local.remove([
             "accessToken",
-            "userEmail"
+            "userName"
         ]);
 
         showAuthPrompt();
@@ -90,12 +90,12 @@ async function checkAuthAndLoad() {
 
     const data = await chrome.storage.local.get([
         "accessToken",
-        "userEmail"
+        "userName"
     ]);
 
     if (data.accessToken) {
 
-        showAppContent(data.userEmail);
+        showAppContent(data.userName);
         loadSettings();
 
     } else {
@@ -115,13 +115,13 @@ function showAuthPrompt() {
 }
 
 
-function showAppContent(email) {
+function showAppContent(username) {
 
     authPrompt.classList.add("hidden");
     appContent.classList.remove("hidden");
 
-    if (userEmailLabel) {
-        userEmailLabel.textContent = email || "";
+    if (userNameLabel) {
+        userNameLabel.textContent = username || "";
     }
 
 }
@@ -181,7 +181,7 @@ async function loadSettings() {
                 // Token expired/invalid — send the user back to login
                 await chrome.storage.local.remove([
                     "accessToken",
-                    "userEmail"
+                    "userName"
                 ]);
 
                 showAuthPrompt();
