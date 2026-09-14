@@ -321,3 +321,53 @@ input:checked + .slider::before {
 
     padding: 15px 5px;
 }
+
+.focus-card {
+    margin-top: 16px;
+    padding: 16px;
+    border-radius: 12px;
+    background: #f5f3ff;
+    text-align: center;
+}
+
+.focus-card h2 {
+    margin-bottom: 12px;
+}
+
+#timer {
+    font-size: 36px;
+    font-weight: 700;
+    margin: 12px 0 16px;
+}
+
+.duration-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 14px;
+}
+
+.duration-btn {
+    padding: 7px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+}
+
+.duration-btn.active {
+    background: #6c5ce7;
+    color: white;
+    border-color: #6c5ce7;
+}
+
+#start-session {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #6c5ce7;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}

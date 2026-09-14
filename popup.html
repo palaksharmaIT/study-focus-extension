@@ -17,49 +17,143 @@
 
         <!-- Shown ONLY when the user is not logged in -->
         <div id="auth-prompt" class="auth-prompt">
-            <p class="auth-message">Log in to sync your blocked sites across devices.</p>
+
+            <p class="auth-message">
+                Log in to sync your blocked sites across devices.
+            </p>
+
             <button id="login-button">
                 Login / Register
             </button>
+
         </div>
+
 
         <!-- Shown ONLY when the user is logged in -->
         <div id="app-content" class="app-content hidden">
 
+            <!-- User Bar -->
             <div class="user-bar">
+
                 <span id="user-email"></span>
-                <button id="logout-button">Logout</button>
+
+                <button id="logout-button">
+                    Logout
+                </button>
+
             </div>
 
+
+            <!-- Study Mode -->
             <div class="mode-card">
+
                 <div>
+
                     <h2>Study Mode</h2>
-                    <p id="mode-status">Currently OFF</p>
+
+                    <p id="mode-status">
+                        Currently OFF
+                    </p>
+
                 </div>
 
                 <label class="switch">
-                    <input type="checkbox" id="study-mode">
+
+                    <input
+                        type="checkbox"
+                        id="study-mode"
+                    >
+
                     <span class="slider"></span>
+
                 </label>
+
             </div>
 
+
+            <!-- Focus Session -->
+            <div class="focus-card">
+
+                <h2>Focus Session</h2>
+
+                <div id="timer">
+                    25:00
+                </div>
+
+
+                <!-- Session Duration -->
+                <div class="duration-buttons">
+
+                    <button
+                        class="duration-btn active"
+                        data-duration="25"
+                    >
+                        25 min
+                    </button>
+
+                    <button
+                        class="duration-btn"
+                        data-duration="45"
+                    >
+                        45 min
+                    </button>
+
+                    <button
+                        class="duration-btn"
+                        data-duration="60"
+                    >
+                        60 min
+                    </button>
+
+                </div>
+
+
+                <!-- Start Session -->
+                <button id="start-session">
+                    Start Session
+                </button>
+
+            </div>
+
+
+            <!-- Stats -->
             <div class="stats">
 
                 <div class="stat-box">
-                    <span id="blocked-count">0</span>
-                    <p>Blocked Sites</p>
+
+                    <span id="blocked-count">
+                        0
+                    </span>
+
+                    <p>
+                        Blocked Sites
+                    </p>
+
                 </div>
 
+
                 <div class="stat-box">
-                    <span id="session-status">Inactive</span>
-                    <p>Session</p>
+
+                    <span id="session-status">
+                        Inactive
+                    </span>
+
+                    <p>
+                        Session
+                    </p>
+
                 </div>
 
             </div>
 
+
+            <!-- Blocked Websites -->
             <div class="section">
 
-                <h3>Blocked Websites</h3>
+                <h3>
+                    Blocked Websites
+                </h3>
+
 
                 <div class="website-input">
 
@@ -75,6 +169,7 @@
 
                 </div>
 
+
                 <ul id="website-list">
                     <!-- Websites will be added here using JavaScript -->
                 </ul>
@@ -84,6 +179,7 @@
         </div>
 
     </div>
+
 
     <script src="popup.js"></script>
 
