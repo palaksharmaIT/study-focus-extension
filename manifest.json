@@ -3,13 +3,14 @@
 
     "name": "StudyFocus",
 
-    "version": "1.0.0",
+    "version": "1.1.0",
 
     "description": "Block distracting websites and stay focused while studying.",
 
     "permissions": [
         "storage",
-        "declarativeNetRequest"
+        "declarativeNetRequest",
+        "alarms"
     ],
 
     "host_permissions": [

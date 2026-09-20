@@ -1,766 +1,3 @@
-// // const studyModeToggle = document.getElementById("study-mode");
-// // const modeStatus = document.getElementById("mode-status");
-
-// // const websiteInput = document.getElementById("website-input");
-// // const addWebsiteButton = document.getElementById("add-website");
-// // const websiteList = document.getElementById("website-list");
-
-// // const blockedCount = document.getElementById("blocked-count");
-// // const sessionStatus = document.getElementById("session-status");
-
-// // const loginButton = document.getElementById("login-button");
-// // const logoutButton = document.getElementById("logout-button");
-// // const userNameLabel = document.getElementById("user-email");
-
-// // const authPrompt = document.getElementById("auth-prompt");
-// // const appContent = document.getElementById("app-content");
-
-
-// // // Default blocked websites
-// // const defaultBlockedWebsites = [
-// //     "youtube.com",
-// //     "instagram.com",
-// //     "facebook.com",
-// //     "reddit.com",
-// //     "netflix.com",
-// //     "x.com"
-// // ];
-
-
-// // // Check login state first, THEN decide what to show
-// // document.addEventListener("DOMContentLoaded", checkAuthAndLoad);
-
-
-// // // Study Mode toggle
-// // studyModeToggle.addEventListener("change", async () => {
-
-// //     const isEnabled = studyModeToggle.checked;
-
-// //     await chrome.storage.local.set({
-// //         studyMode: isEnabled
-// //     });
-
-// //     updateModeUI(isEnabled);
-// // });
-
-
-// // // Add website button
-// // addWebsiteButton.addEventListener("click", addWebsite);
-
-
-// // // Press Enter to add website
-// // websiteInput.addEventListener("keydown", (event) => {
-
-// //     if (event.key === "Enter") {
-// //         addWebsite();
-// //     }
-
-// // });
-
-
-// // // Login / Register button
-// // loginButton.addEventListener("click", () => {
-
-// //     chrome.tabs.create({
-// //         url: chrome.runtime.getURL("login.html")
-// //     });
-
-// // });
-
-
-// // // Logout button
-// // if (logoutButton) {
-
-// //     logoutButton.addEventListener("click", async () => {
-
-// //         await chrome.storage.local.remove([
-// //             "accessToken",
-// //             "userName"
-// //         ]);
-
-// //         showAuthPrompt();
-
-// //     });
-
-// // }
-
-
-// // // Decide which screen to show: login prompt, or the main app
-// // async function checkAuthAndLoad() {
-
-// //     const data = await chrome.storage.local.get([
-// //         "accessToken",
-// //         "userName"
-// //     ]);
-
-// //     if (data.accessToken) {
-
-// //         showAppContent(data.userName);
-// //         loadSettings();
-
-// //     } else {
-
-// //         showAuthPrompt();
-
-// //     }
-
-// // }
-
-
-// // function showAuthPrompt() {
-
-// //     authPrompt.classList.remove("hidden");
-// //     appContent.classList.add("hidden");
-
-// // }
-
-
-// // function showAppContent(username) {
-
-// //     authPrompt.classList.add("hidden");
-// //     appContent.classList.remove("hidden");
-
-// //     if (userNameLabel) {
-// //         userNameLabel.textContent = username || "";
-// //     }
-
-// // }
-
-
-// // // Load saved settings
-// // async function loadSettings() {
-// //     const data = await chrome.storage.local.get([
-// //         "studyMode",
-// //         "accessToken"
-// //     ]);
-
-// //     const studyMode = data.studyMode || false;
-// //     const accessToken = data.accessToken;
-
-// //     if (!accessToken) {
-// //         alert("Please login first.");
-// //         return;
-// //     }
-
-// //     try {
-// //         const response = await fetch(
-// //             "http://127.0.0.1:8000/api/websites/",
-// //             {
-// //                 method: "GET",
-// //                 headers: {
-// //                     "Authorization": `Bearer ${accessToken}`
-// //                 }
-// //             }
-// //         );
-
-// //         if (response.status === 401) {
-// //             alert("Session expired. Please login again.");
-
-// //             await chrome.storage.local.remove([
-// //                 "accessToken",
-// //                 "refreshToken"
-// //             ]);
-
-// //             return;
-// //         }
-
-// //         if (!response.ok) {
-// //             throw new Error(
-// //                 `Server returned ${response.status}`
-// //             );
-// //         }
-
-// //         const apiData = await response.json();
-
-// //         console.log("Websites received from Django:", apiData);
-
-// //         // Get only the domain names
-// //         const websites = apiData
-// //             .filter(item => item.is_active)
-// //             .map(item => item.domain);
-
-// //         // Save the latest Django list locally
-// //         await chrome.storage.local.set({
-// //             blockedWebsites: websites
-// //         });
-
-// //         // Update popup
-// //         displayWebsites(websites);
-
-// //     } catch (error) {
-// //         console.error("Could not load websites:", error);
-
-// //         // If API fails, show locally saved websites
-// //         const localData = await chrome.storage.local.get(
-// //             "blockedWebsites"
-// //         );
-
-// //         displayWebsites(
-// //             localData.blockedWebsites || []
-// //         );
-// //     }
-
-// //     studyModeToggle.checked = studyMode;
-// //     updateModeUI(studyMode);
-// // }
-
-
-// // // Update Study Mode UI
-// // function updateModeUI(isEnabled) {
-
-// //     if (isEnabled) {
-
-// //         modeStatus.textContent = "Currently ON";
-// //         sessionStatus.textContent = "Active";
-
-// //     } else {
-
-// //         modeStatus.textContent = "Currently OFF";
-// //         sessionStatus.textContent = "Inactive";
-
-// //     }
-
-// // }
-
-
-// // // Add a website
-// // async function addWebsite() {
-// //     let website = websiteInput.value.trim().toLowerCase();
-
-// //     if (!website) {
-// //         return;
-// //     }
-
-// //     // Remove http:// or https://
-// //     website = website.replace(/^https?:\/\//, "");
-
-// //     // Remove www.
-// //     website = website.replace(/^www\./, "");
-
-// //     // Remove everything after /
-// //     website = website.split("/")[0];
-
-// //     try {
-// //         const tokenData = await chrome.storage.local.get(
-// //             "accessToken"
-// //         );
-
-// //         const accessToken = tokenData.accessToken;
-
-// //         if (!accessToken) {
-// //             alert("Please login first.");
-// //             return;
-// //         }
-
-// //         const response = await fetch(
-// //             "http://127.0.0.1:8000/api/websites/add/",
-// //             {
-// //                 method: "POST",
-// //                 headers: {
-// //                     "Content-Type": "application/json",
-// //                     "Authorization": `Bearer ${accessToken}`
-// //                 },
-// //                 body: JSON.stringify({
-// //                     domain: website
-// //                 })
-// //             }
-// //         );
-
-// //         const data = await response.json();
-
-// //         if (!response.ok) {
-// //             alert(data.error || "Could not add website.");
-// //             return;
-// //         }
-
-// //         // Save the updated list locally
-// //         const storageData = await chrome.storage.local.get(
-// //             "blockedWebsites"
-// //         );
-
-// //         const websites = storageData.blockedWebsites || [];
-
-// //         if (!websites.includes(data.domain)) {
-// //             websites.push(data.domain);
-// //         }
-
-// //         await chrome.storage.local.set({
-// //             blockedWebsites: websites
-// //         });
-
-// //         websiteInput.value = "";
-
-// //         displayWebsites(websites);
-
-// //     } catch (error) {
-// //         console.error("Add website error:", error);
-
-// //         alert("Could not connect to Django server.");
-// //     }
-// // }
-// // // Remove website
-// // async function removeWebsite(index) {
-
-// //     const data = await chrome.storage.local.get(
-// //         "blockedWebsites"
-// //     );
-
-// //     const websites = data.blockedWebsites || [];
-
-
-// //     websites.splice(index, 1);
-
-
-// //     await chrome.storage.local.set({
-// //         blockedWebsites: websites
-// //     });
-
-
-// //     displayWebsites(websites);
-// // }
-
-// // function displayWebsites(websites) {
-// //     websiteList.innerHTML = "";
-
-// //     blockedCount.textContent = websites.length;
-
-// //     if (websites.length === 0) {
-// //         websiteList.innerHTML = `
-// //             <li class="empty-message">
-// //                 No blocked websites
-// //             </li>
-// //         `;
-// //         return;
-// //     }
-
-// //     websites.forEach((website, index) => {
-// //         const li = document.createElement("li");
-
-// //         li.innerHTML = `
-// //             <span>${website}</span>
-// //             <button data-index="${index}">
-// //                 Remove
-// //             </button>
-// //         `;
-
-// //         const removeButton = li.querySelector("button");
-
-// //         removeButton.addEventListener("click", () => {
-// //             removeWebsite(index);
-// //         });
-
-// //         websiteList.appendChild(li);
-// //     });
-// // }
-
-// const API_BASE_URL = "https://studyfocus-backend.onrender.com";
-
-// const studyModeToggle = document.getElementById("study-mode");
-// const modeStatus = document.getElementById("mode-status");
-// const websiteInput = document.getElementById("website-input");
-// const addWebsiteButton = document.getElementById("add-website");
-// const websiteList = document.getElementById("website-list");
-// const blockedCount = document.getElementById("blocked-count");
-// const sessionStatus = document.getElementById("session-status");
-
-// const loginButton = document.getElementById("login-button");
-// const logoutButton = document.getElementById("logout-button");
-// const userNameLabel = document.getElementById("user-email");
-// const authPrompt = document.getElementById("auth-prompt");
-// const appContent = document.getElementById("app-content");
-
-
-// // Check login state first
-// document.addEventListener("DOMContentLoaded", checkAuthAndLoad);
-
-
-// // Study Mode toggle
-// studyModeToggle.addEventListener("change", async () => {
-//     const isEnabled = studyModeToggle.checked;
-
-//     await chrome.storage.local.set({
-//         studyMode: isEnabled
-//     });
-
-//     updateModeUI(isEnabled);
-// });
-
-
-// // Add website button
-// addWebsiteButton.addEventListener("click", addWebsite);
-
-
-// // Press Enter to add website
-// websiteInput.addEventListener("keydown", (event) => {
-//     if (event.key === "Enter") {
-//         addWebsite();
-//     }
-// });
-
-
-// // Login / Register button
-// loginButton.addEventListener("click", () => {
-//     chrome.tabs.create({
-//         url: chrome.runtime.getURL("login.html")
-//     });
-// });
-
-
-// // Logout
-// if (logoutButton) {
-//     logoutButton.addEventListener("click", async () => {
-//         await chrome.storage.local.remove([
-//             "accessToken",
-//             "refreshToken",
-//             "userName"
-//         ]);
-
-//         showAuthPrompt();
-//     });
-// }
-
-
-// // Check authentication
-// async function checkAuthAndLoad() {
-
-//     const data = await chrome.storage.local.get([
-//         "accessToken",
-//         "userName"
-//     ]);
-
-//     if (data.accessToken) {
-
-//         showAppContent(data.userName);
-
-//         await loadSettings();
-
-//     } else {
-
-//         showAuthPrompt();
-//     }
-// }
-
-
-// // Show login screen
-// function showAuthPrompt() {
-
-//     authPrompt.classList.remove("hidden");
-//     appContent.classList.add("hidden");
-// }
-
-
-// // Show application
-// function showAppContent(username) {
-
-//     authPrompt.classList.add("hidden");
-//     appContent.classList.remove("hidden");
-
-//     if (userNameLabel) {
-//         userNameLabel.textContent = username || "";
-//     }
-// }
-
-
-// // Load websites from Django
-// async function loadSettings() {
-
-//     const data = await chrome.storage.local.get([
-//         "studyMode",
-//         "accessToken"
-//     ]);
-
-//     const studyMode = data.studyMode || false;
-//     const accessToken = data.accessToken;
-
-//     if (!accessToken) {
-//         alert("Please login first.");
-//         return;
-//     }
-
-//     try {
-
-//         const response = await fetch(
-//             `${API_BASE_URL}/api/websites/`,
-//             {
-//                 method: "GET",
-//                 headers: {
-//                     "Authorization": `Bearer ${accessToken}`
-//                 }
-//             }
-//         );
-
-//         if (response.status === 401) {
-
-//             alert("Session expired. Please login again.");
-
-//             await chrome.storage.local.remove([
-//                 "accessToken",
-//                 "refreshToken",
-//                 "userName"
-//             ]);
-
-//             showAuthPrompt();
-
-//             return;
-//         }
-
-//         if (!response.ok) {
-//             throw new Error(
-//                 `Server returned ${response.status}`
-//             );
-//         }
-
-//         const apiData = await response.json();
-
-//         console.log(
-//             "Websites received from Django:",
-//             apiData
-//         );
-
-//         const websites = apiData
-//             .filter(item => item.is_active)
-//             .map(item => item.domain);
-
-//         await chrome.storage.local.set({
-//             blockedWebsites: websites
-//         });
-
-//         displayWebsites(websites);
-
-//     } catch (error) {
-
-//         console.error(
-//             "Could not load websites:",
-//             error
-//         );
-
-//         const localData =
-//             await chrome.storage.local.get(
-//                 "blockedWebsites"
-//             );
-
-//         displayWebsites(
-//             localData.blockedWebsites || []
-//         );
-//     }
-
-//     studyModeToggle.checked = studyMode;
-
-//     updateModeUI(studyMode);
-// }
-
-
-// // Update Study Mode UI
-// function updateModeUI(isEnabled) {
-
-//     if (isEnabled) {
-
-//         modeStatus.textContent = "Currently ON";
-//         sessionStatus.textContent = "Active";
-
-//     } else {
-
-//         modeStatus.textContent = "Currently OFF";
-//         sessionStatus.textContent = "Inactive";
-//     }
-// }
-
-
-// // Add website
-// async function addWebsite() {
-
-//     let website =
-//         websiteInput.value.trim().toLowerCase();
-
-//     if (!website) {
-//         return;
-//     }
-
-
-//     // Remove http:// or https://
-//     website = website.replace(/^https?:\/\//, "");
-
-
-//     // Remove www.
-//     website = website.replace(/^www\./, "");
-
-
-//     // Remove everything after /
-//     website = website.split("/")[0];
-
-
-//     try {
-
-//         const tokenData =
-//             await chrome.storage.local.get(
-//                 "accessToken"
-//             );
-
-//         const accessToken =
-//             tokenData.accessToken;
-
-
-//         if (!accessToken) {
-
-//             alert("Please login first.");
-//             return;
-//         }
-
-
-//         const response = await fetch(
-//             `${API_BASE_URL}/api/websites/add/`,
-//             {
-//                 method: "POST",
-
-//                 headers: {
-//                     "Content-Type": "application/json",
-//                     "Authorization": `Bearer ${accessToken}`
-//                 },
-
-//                 body: JSON.stringify({
-//                     domain: website
-//                 })
-//             }
-//         );
-
-
-//         const data = await response.json();
-
-
-//         if (!response.ok) {
-
-//             alert(
-//                 data.error ||
-//                 "Could not add website."
-//             );
-
-//             return;
-//         }
-
-
-//         const storageData =
-//             await chrome.storage.local.get(
-//                 "blockedWebsites"
-//             );
-
-
-//         const websites =
-//             storageData.blockedWebsites || [];
-
-
-//         if (!websites.includes(data.domain)) {
-
-//             websites.push(data.domain);
-//         }
-
-
-//         await chrome.storage.local.set({
-//             blockedWebsites: websites
-//         });
-
-
-//         websiteInput.value = "";
-
-//         displayWebsites(websites);
-
-
-//     } catch (error) {
-
-//         console.error(
-//             "Add website error:",
-//             error
-//         );
-
-//         alert(
-//             "Could not connect to Django server."
-//         );
-//     }
-// }
-
-
-// // Remove website
-// async function removeWebsite(index) {
-
-//     const data =
-//         await chrome.storage.local.get(
-//             "blockedWebsites"
-//         );
-
-//     const websites =
-//         data.blockedWebsites || [];
-
-
-//     websites.splice(index, 1);
-
-
-//     await chrome.storage.local.set({
-//         blockedWebsites: websites
-//     });
-
-
-//     displayWebsites(websites);
-// }
-
-
-// // Display websites
-// function displayWebsites(websites) {
-
-//     websiteList.innerHTML = "";
-
-//     blockedCount.textContent =
-//         websites.length;
-
-
-//     if (websites.length === 0) {
-
-//         websiteList.innerHTML = `
-//             <li class="empty-message">
-//                 No blocked websites
-//             </li>
-//         `;
-
-//         return;
-//     }
-
-
-//     websites.forEach((website, index) => {
-
-//         const li =
-//             document.createElement("li");
-
-
-//         const domainText =
-//             document.createElement("span");
-
-//         domainText.textContent =
-//             website;
-
-
-//         const removeButton =
-//             document.createElement("button");
-
-//         removeButton.textContent =
-//             "Remove";
-
-
-//         removeButton.addEventListener(
-//             "click",
-//             () => {
-//                 removeWebsite(index);
-//             }
-//         );
-
-
-//         li.appendChild(domainText);
-//         li.appendChild(removeButton);
-
-
-//         websiteList.appendChild(li);
-//     });
-// }
-
-const API_BASE_URL = "http://127.0.0.1:8000";
-
 // ==============================
 // DOM ELEMENTS
 // ==============================
@@ -783,7 +20,6 @@ const userNameLabel = document.getElementById("user-email");
 const authPrompt = document.getElementById("auth-prompt");
 const appContent = document.getElementById("app-content");
 
-
 // Focus Session elements
 const timerDisplay = document.getElementById("timer");
 const durationButtons = document.querySelectorAll(".duration-btn");
@@ -791,91 +27,56 @@ const startSessionButton = document.getElementById("start-session");
 
 
 // ==============================
-// FOCUS SESSION VARIABLES
+// FOCUS SESSION STATE
 // ==============================
+// NOTE: the actual countdown now lives in background.js (via
+// chrome.alarms), so it survives the popup being closed. These
+// variables here are only for driving the popup's own display
+// while it happens to be open — they are not the source of truth.
 
 let selectedDuration = 25;
-
-let timerInterval = null;
-
 let remainingSeconds = 0;
-
+let focusEndTime = null;
 let sessionRunning = false;
-
 let sessionId = null;
+let uiTickInterval = null;
 
 
 // ==============================
 // PAGE LOAD
 // ==============================
 
-document.addEventListener(
-    "DOMContentLoaded",
-    checkAuthAndLoad
-);
+document.addEventListener("DOMContentLoaded", checkAuthAndLoad);
 
 
 // ==============================
 // STUDY MODE TOGGLE
 // ==============================
 
-studyModeToggle.addEventListener(
-    "change",
-    async () => {
+studyModeToggle.addEventListener("change", async () => {
 
-        const isEnabled =
-            studyModeToggle.checked;
+    const isEnabled = studyModeToggle.checked;
 
+    await chrome.storage.local.set({
+        studyMode: isEnabled
+    });
 
-        await chrome.storage.local.set({
-            studyMode: isEnabled
+    updateModeUI(isEnabled);
+
+    // Study Mode turned OFF while a session is running -> pause it
+    if (!isEnabled && sessionRunning) {
+
+        sessionRunning = false;
+        stopUiTicking();
+
+        await chrome.runtime.sendMessage({
+            type: "PAUSE_FOCUS_TIMER"
         });
 
-
-        // Study Mode turned ON
-        if (isEnabled) {
-
-            updateModeUI(true);
-
-            // Resume existing session
-            const sessionData =
-                await chrome.storage.local.get([
-                    "remainingSeconds",
-                    "sessionRunning",
-                    "selectedDuration"
-                ]);
-
-
-            if (
-                sessionData.sessionRunning &&
-                sessionData.remainingSeconds > 0
-            ) {
-
-                remainingSeconds =
-                    sessionData.remainingSeconds;
-
-                selectedDuration =
-                    sessionData.selectedDuration || 25;
-
-                sessionRunning = true;
-
-                startTimer();
-
-            }
-
-        }
-
-        // Study Mode turned OFF
-        else {
-
-            updateModeUI(false);
-
-            pauseTimer();
-
-        }
-
+        startSessionButton.textContent = "Resume Session";
+        sessionStatus.textContent = "Paused";
     }
-);
+});
 
 
 // ==============================
@@ -884,415 +85,195 @@ studyModeToggle.addEventListener(
 
 durationButtons.forEach(button => {
 
-    button.addEventListener(
-        "click",
-        async () => {
+    button.addEventListener("click", async () => {
 
-            // Don't allow changing duration
-            // while session is running
-            if (sessionRunning) {
-                return;
-            }
-
-
-            durationButtons.forEach(btn => {
-
-                btn.classList.remove("active");
-
-            });
-
-
-            button.classList.add("active");
-
-
-            selectedDuration =
-                Number(button.dataset.duration);
-
-
-            remainingSeconds =
-                selectedDuration * 60;
-
-
-            await chrome.storage.local.set({
-                selectedDuration:
-                    selectedDuration,
-
-                remainingSeconds:
-                    remainingSeconds
-            });
-
-
-            updateTimerDisplay(
-                remainingSeconds
-            );
-
+        // Don't allow changing duration while a session is running
+        if (sessionRunning) {
+            return;
         }
-    );
 
+        durationButtons.forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+
+        selectedDuration = Number(button.dataset.duration);
+        remainingSeconds = selectedDuration * 60;
+
+        await chrome.storage.local.set({
+            selectedDuration: selectedDuration,
+            remainingSeconds: remainingSeconds
+        });
+
+        updateTimerDisplay(remainingSeconds);
+    });
 });
 
 
 // ==============================
-// START SESSION
+// START / RESUME SESSION
 // ==============================
 
-startSessionButton.addEventListener(
-    "click",
-    startFocusSession
-);
+startSessionButton.addEventListener("click", startFocusSession);
 
 
 async function startFocusSession() {
 
-    // Study Mode must be ON
     if (!studyModeToggle.checked) {
-
-        alert(
-            "Turn ON Study Mode before starting a focus session."
-        );
-
+        alert("Turn ON Study Mode before starting a focus session.");
         return;
     }
 
-
-    // Don't start another session
     if (sessionRunning) {
         return;
     }
 
+    const tokenData = await chrome.storage.local.get("accessToken");
 
-    try {
+    if (!tokenData.accessToken) {
+        alert("Please login first.");
+        return;
+    }
 
-        const tokenData =
-            await chrome.storage.local.get(
-                "accessToken"
-            );
+    // If there's an existing paused session, resume it
+    const saved = await chrome.storage.local.get([
+        "sessionId",
+        "remainingSeconds",
+        "selectedDuration",
+        "sessionRunning",
+        "sessionCompleted"
+    ]);
 
+    const hasPausedSession =
+        saved.sessionId &&
+        saved.remainingSeconds > 0 &&
+        !saved.sessionRunning &&
+        !saved.sessionCompleted;
 
-        const accessToken =
-            tokenData.accessToken;
+    if (hasPausedSession) {
 
-
-        if (!accessToken) {
-
-            alert(
-                "Please login first."
-            );
-
-            return;
-        }
-
-
-        // If there is an existing paused session,
-        // resume it instead of creating a new one
-        const savedSession =
-            await chrome.storage.local.get([
-                "sessionId",
-                "remainingSeconds",
-                "selectedDuration",
-                "sessionRunning"
-            ]);
-
-
-        if (
-            savedSession.sessionId &&
-            savedSession.remainingSeconds > 0
-        ) {
-
-            sessionId =
-                savedSession.sessionId;
-
-            selectedDuration =
-                savedSession.selectedDuration || 25;
-
-            remainingSeconds =
-                savedSession.remainingSeconds;
-
-            sessionRunning = true;
-
-            startTimer();
-
-            return;
-        }
-
-
-        // New session
-        const response = await fetch(
-            `${API_BASE_URL}/api/focus/start/`,
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type":
-                        "application/json",
-
-                    "Authorization":
-                        `Bearer ${accessToken}`
-                },
-
-                body: JSON.stringify({
-                    duration:
-                        selectedDuration
-                })
-            }
-        );
-
-
-        const data =
-            await response.json();
-
-
-        if (response.status === 401) {
-
-            alert(
-                "Session expired. Please login again."
-            );
-
-
-            await chrome.storage.local.remove([
-                "accessToken",
-                "refreshToken",
-                "userName"
-            ]);
-
-
-            showAuthPrompt();
-
-            return;
-        }
-
-
-        if (!response.ok) {
-
-            alert(
-                data.error ||
-                "Could not start focus session."
-            );
-
-            return;
-        }
-
-
-        // Save backend session ID
-        sessionId = data.id;
-
-
-        remainingSeconds =
-            selectedDuration * 60;
-
-
+        sessionId = saved.sessionId;
+        selectedDuration = saved.selectedDuration || 25;
+        remainingSeconds = saved.remainingSeconds;
         sessionRunning = true;
 
-
-        await chrome.storage.local.set({
-
-            sessionId:
-                sessionId,
-
-            selectedDuration:
-                selectedDuration,
-
-            remainingSeconds:
-                remainingSeconds,
-
-            sessionRunning:
-                true
-
+        await chrome.runtime.sendMessage({
+            type: "RESUME_FOCUS_TIMER",
+            remainingSeconds: remainingSeconds
         });
 
-
-        startTimer();
-
-
-    } 
-    
-    catch (error) {
-
-        console.error(
-            "Start session error:",
-            error
-        );
-
-        alert(
-            "Start Session Error: " + error.message
-        );
-
-    }
-
-}
-
-
-// ==============================
-// START TIMER
-// ==============================
-
-function startTimer() {
-
-    if (timerInterval) {
+        focusEndTime = Date.now() + remainingSeconds * 1000;
+        startUiTicking();
         return;
     }
 
+    // Otherwise, start a brand new session on the backend
+    try {
 
-    sessionRunning = true;
+        const response = await apiFetch("/api/focus/start/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                duration: selectedDuration
+            })
+        });
 
+        const data = await response.json();
 
-    startSessionButton.textContent =
-        "Session Running";
+        if (response.status === 401) {
+            alert("Session expired. Please login again.");
+            await logoutAndShowAuthPrompt();
+            return;
+        }
 
+        if (!response.ok) {
+            alert(data.error || "Could not start focus session.");
+            return;
+        }
 
-    sessionStatus.textContent =
-        "Active";
+        sessionId = data.id;
+        remainingSeconds = selectedDuration * 60;
+        sessionRunning = true;
+        focusEndTime = Date.now() + remainingSeconds * 1000;
 
+        await chrome.storage.local.set({
+            sessionId: sessionId,
+            selectedDuration: selectedDuration
+        });
 
-    updateTimerDisplay(
-        remainingSeconds
-    );
+        await chrome.runtime.sendMessage({
+            type: "START_FOCUS_TIMER",
+            durationMinutes: selectedDuration
+        });
 
+        startUiTicking();
 
-    timerInterval = setInterval(
-        async () => {
-
-            // Safety check:
-            // if Study Mode is OFF,
-            // pause the timer
-            if (!studyModeToggle.checked) {
-
-                pauseTimer();
-
-                return;
-            }
-
-
-            remainingSeconds--;
-
-
-            updateTimerDisplay(
-                remainingSeconds
-            );
-
-
-            await chrome.storage.local.set({
-
-                remainingSeconds:
-                    remainingSeconds,
-
-                sessionRunning:
-                    true
-
-            });
-
-
-            // Timer finished
-            if (remainingSeconds <= 0) {
-
-                await completeSession();
-
-            }
-
-        },
-        1000
-    );
-
+    } catch (error) {
+        console.error("Start session error:", error);
+        alert("Start Session Error: " + error.message);
+    }
 }
 
 
 // ==============================
-// PAUSE TIMER
+// UI TICKING (display only)
 // ==============================
+// This interval only refreshes what's shown in the popup. The
+// real countdown (and what happens when it hits zero) is owned
+// by background.js, so closing the popup no longer stops the
+// session — it just stops updating this number.
 
-async function pauseTimer() {
+function startUiTicking() {
 
-    if (timerInterval) {
-
-        clearInterval(
-            timerInterval
-        );
-
-        timerInterval = null;
-
-    }
-
-
-    if (!sessionRunning) {
+    if (uiTickInterval) {
         return;
     }
 
-
     sessionRunning = true;
 
+    startSessionButton.textContent = "Session Running";
+    sessionStatus.textContent = "Active";
 
-    startSessionButton.textContent =
-        "Resume Session";
+    updateTimerDisplay(remainingSeconds);
 
+    uiTickInterval = setInterval(() => {
 
-    sessionStatus.textContent =
-        "Paused";
+        remainingSeconds = Math.max(
+            0,
+            Math.round((focusEndTime - Date.now()) / 1000)
+        );
 
+        updateTimerDisplay(remainingSeconds);
 
-    await chrome.storage.local.set({
+        if (remainingSeconds <= 0) {
+            stopUiTicking();
+            showSessionCompletedUI();
+        }
 
-        remainingSeconds:
-            remainingSeconds,
-
-        sessionRunning:
-            true
-
-    });
-
+    }, 1000);
 }
 
 
-// ==============================
-// COMPLETE SESSION
-// ==============================
+function stopUiTicking() {
 
-async function completeSession() {
-
-    if (timerInterval) {
-
-        clearInterval(
-            timerInterval
-        );
-
-        timerInterval = null;
-
+    if (uiTickInterval) {
+        clearInterval(uiTickInterval);
+        uiTickInterval = null;
     }
+}
 
 
-    remainingSeconds = 0;
+function showSessionCompletedUI() {
 
     sessionRunning = false;
-
+    remainingSeconds = 0;
 
     updateTimerDisplay(0);
 
+    startSessionButton.textContent = "Session Completed";
+    sessionStatus.textContent = "Completed";
 
-    startSessionButton.textContent =
-        "Session Completed";
-
-
-    sessionStatus.textContent =
-        "Completed";
-
-
-    await chrome.storage.local.set({
-
-        remainingSeconds:
-            0,
-
-        sessionRunning:
-            false,
-
-        sessionCompleted:
-            true
-
-    });
-
-
-    alert(
-        "Focus session completed!"
-    );
-
+    alert("Focus session completed!");
 }
 
 
@@ -1302,17 +283,11 @@ async function completeSession() {
 
 function updateTimerDisplay(seconds) {
 
-    const minutes =
-        Math.floor(seconds / 60);
-
-
-    const remaining =
-        seconds % 60;
-
+    const minutes = Math.floor(seconds / 60);
+    const remaining = seconds % 60;
 
     timerDisplay.textContent =
         `${String(minutes).padStart(2, "0")}:${String(remaining).padStart(2, "0")}`;
-
 }
 
 
@@ -1320,46 +295,24 @@ function updateTimerDisplay(seconds) {
 // ADD WEBSITE
 // ==============================
 
-addWebsiteButton.addEventListener(
-    "click",
-    addWebsite
-);
+addWebsiteButton.addEventListener("click", addWebsite);
 
-
-// Press Enter to add website
-websiteInput.addEventListener(
-    "keydown",
-    (event) => {
-
-        if (event.key === "Enter") {
-
-            addWebsite();
-
-        }
-
+websiteInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        addWebsite();
     }
-);
+});
 
 
 // ==============================
 // LOGIN / REGISTER
 // ==============================
 
-loginButton.addEventListener(
-    "click",
-    () => {
-
-        chrome.tabs.create({
-
-            url:
-                chrome.runtime.getURL(
-                    "login.html"
-                )
-
-        });
-
-    }
-);
+loginButton.addEventListener("click", () => {
+    chrome.tabs.create({
+        url: chrome.runtime.getURL("login.html")
+    });
+});
 
 
 // ==============================
@@ -1368,46 +321,42 @@ loginButton.addEventListener(
 
 if (logoutButton) {
 
-    logoutButton.addEventListener(
-        "click",
-        async () => {
+    logoutButton.addEventListener("click", async () => {
 
-            // Stop timer if running
-            if (timerInterval) {
+        stopUiTicking();
 
-                clearInterval(
-                    timerInterval
-                );
+        // Also stop the background timer and clear its alarm so
+        // a stale session doesn't keep counting down for a user
+        // who just logged out
+        chrome.alarms.clear("focusSessionComplete");
 
-                timerInterval = null;
+        await chrome.storage.local.remove([
+            "accessToken",
+            "refreshToken",
+            "userName",
+            "sessionId",
+            "remainingSeconds",
+            "sessionRunning",
+            "sessionCompleted",
+            "focusEndTime"
+        ]);
 
-            }
-
-
-            await chrome.storage.local.remove([
-
-                "accessToken",
-
-                "refreshToken",
-
-                "userName",
-
-                "sessionId",
-
-                "remainingSeconds",
-
-                "sessionRunning",
-
-                "sessionCompleted"
-
-            ]);
+        showAuthPrompt();
+    });
+}
 
 
-            showAuthPrompt();
+async function logoutAndShowAuthPrompt() {
 
-        }
-    );
+    stopUiTicking();
 
+    await chrome.storage.local.remove([
+        "accessToken",
+        "refreshToken",
+        "userName"
+    ]);
+
+    showAuthPrompt();
 }
 
 
@@ -1417,78 +366,39 @@ if (logoutButton) {
 
 async function checkAuthAndLoad() {
 
-    const data =
-        await chrome.storage.local.get([
-
-            "accessToken",
-
-            "userName"
-
-        ]);
-
+    const data = await chrome.storage.local.get([
+        "accessToken",
+        "userName"
+    ]);
 
     if (data.accessToken) {
 
-        showAppContent(
-            data.userName
-        );
-
+        showAppContent(data.userName);
 
         await loadSettings();
-
-
         await loadFocusSession();
 
-    }
-
-    else {
+    } else {
 
         showAuthPrompt();
-
     }
-
 }
 
-
-// ==============================
-// SHOW LOGIN SCREEN
-// ==============================
 
 function showAuthPrompt() {
-
-    authPrompt.classList.remove(
-        "hidden"
-    );
-
-    appContent.classList.add(
-        "hidden"
-    );
-
+    authPrompt.classList.remove("hidden");
+    appContent.classList.add("hidden");
 }
 
-
-// ==============================
-// SHOW APPLICATION
-// ==============================
 
 function showAppContent(username) {
 
-    authPrompt.classList.add(
-        "hidden"
-    );
-
-    appContent.classList.remove(
-        "hidden"
-    );
-
+    authPrompt.classList.add("hidden");
+    appContent.classList.remove("hidden");
 
     if (userNameLabel) {
-
-        userNameLabel.textContent =
-            username || "";
-
+        userNameLabel.textContent = username || "";
     }
-
 }
 
 
@@ -1498,256 +408,153 @@ function showAppContent(username) {
 
 async function loadSettings() {
 
-    const data =
-        await chrome.storage.local.get([
+    const data = await chrome.storage.local.get([
+        "studyMode",
+        "accessToken"
+    ]);
 
-            "studyMode",
+    const studyMode = data.studyMode || false;
 
-            "accessToken"
-
-        ]);
-
-
-    const studyMode =
-        data.studyMode || false;
-
-
-    const accessToken =
-        data.accessToken;
-
-
-    if (!accessToken) {
-
-        alert(
-            "Please login first."
-        );
-
+    if (!data.accessToken) {
+        alert("Please login first.");
         return;
-
     }
-
 
     try {
 
-        const response =
-            await fetch(
-                `${API_BASE_URL}/api/websites/`,
-                {
-
-                    method: "GET",
-
-                    headers: {
-
-                        "Authorization":
-                            `Bearer ${accessToken}`
-
-                    }
-
-                }
-            );
-
-
-        if (response.status === 401) {
-
-            alert(
-                "Session expired. Please login again."
-            );
-
-
-            await chrome.storage.local.remove([
-
-                "accessToken",
-
-                "refreshToken",
-
-                "userName"
-
-            ]);
-
-
-            showAuthPrompt();
-
-            return;
-
-        }
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                `Server returned ${response.status}`
-            );
-
-        }
-
-
-        const apiData =
-            await response.json();
-
-
-        console.log(
-            "Websites received from Django:",
-            apiData
-        );
-
-
-        const websites =
-            apiData
-
-                .filter(
-                    item => item.is_active
-                )
-
-                .map(
-                    item => item.domain
-                );
-
-
-        await chrome.storage.local.set({
-
-            blockedWebsites:
-                websites
-
+        const response = await apiFetch("/api/websites/", {
+            method: "GET"
         });
 
+        if (response.status === 401) {
+            alert("Session expired. Please login again.");
+            await logoutAndShowAuthPrompt();
+            return;
+        }
 
-        displayWebsites(
-            websites
-        );
+        if (!response.ok) {
+            throw new Error(`Server returned ${response.status}`);
+        }
 
+        const apiData = await response.json();
+
+        const websites = apiData
+            .filter(item => item.is_active)
+            .map(item => item.domain);
+
+        await chrome.storage.local.set({
+            blockedWebsites: websites
+        });
+
+        displayWebsites(websites);
 
     } catch (error) {
 
-        console.error(
-            "Could not load websites:",
-            error
-        );
+        console.error("Could not load websites:", error);
 
-
-        const localData =
-            await chrome.storage.local.get(
-                "blockedWebsites"
-            );
-
-
-        displayWebsites(
-            localData.blockedWebsites || []
-        );
-
+        const localData = await chrome.storage.local.get("blockedWebsites");
+        displayWebsites(localData.blockedWebsites || []);
     }
 
-
-    studyModeToggle.checked =
-        studyMode;
-
-
-    updateModeUI(
-        studyMode
-    );
-
+    studyModeToggle.checked = studyMode;
+    updateModeUI(studyMode);
 }
 
 
 // ==============================
 // LOAD FOCUS SESSION
 // ==============================
+// Reads the state background.js has been keeping in storage and
+// re-syncs this popup's display to it. Handles four cases:
+// completed, still running (resume ticking), paused, or fresh.
 
 async function loadFocusSession() {
 
-    const data =
-        await chrome.storage.local.get([
-
-            "selectedDuration",
-
-            "remainingSeconds",
-
-            "sessionRunning",
-
-            "sessionCompleted",
-
-            "sessionId"
-
-        ]);
-
+    const data = await chrome.storage.local.get([
+        "selectedDuration",
+        "remainingSeconds",
+        "sessionRunning",
+        "sessionCompleted",
+        "sessionId",
+        "focusEndTime"
+    ]);
 
     if (data.selectedDuration) {
-
-        selectedDuration =
-            data.selectedDuration;
-
+        selectedDuration = data.selectedDuration;
     }
 
+    sessionId = data.sessionId || null;
 
-    if (
-        typeof data.remainingSeconds ===
-        "number"
-    ) {
-
-        remainingSeconds =
-            data.remainingSeconds;
-
-    }
-
-    else {
-
-        remainingSeconds =
-            selectedDuration * 60;
-
-    }
-
-
-    sessionId =
-        data.sessionId || null;
-
-
-    updateTimerDisplay(
-        remainingSeconds
-    );
-
-
-    // Completed session
+    // Completed while popup was closed
     if (data.sessionCompleted) {
 
         sessionRunning = false;
+        remainingSeconds = 0;
 
-        sessionStatus.textContent =
-            "Completed";
+        updateTimerDisplay(0);
 
-        startSessionButton.textContent =
-            "Session Completed";
+        sessionStatus.textContent = "Completed";
+        startSessionButton.textContent = "Session Completed";
 
         return;
-
     }
 
+    // Still running in the background
+    if (data.sessionRunning && data.focusEndTime) {
 
-    // Paused/running session
-    if (
-        data.sessionRunning &&
-        remainingSeconds > 0
-    ) {
+        const remaining = Math.max(
+            0,
+            Math.round((data.focusEndTime - Date.now()) / 1000)
+        );
 
-        sessionRunning = true;
+        if (remaining <= 0) {
+            // Alarm hasn't fired yet but time is technically up —
+            // show it as completing momentarily
+            showSessionCompletedUI();
+            return;
+        }
 
+        remainingSeconds = remaining;
+        focusEndTime = data.focusEndTime;
+
+        updateTimerDisplay(remainingSeconds);
 
         if (studyModeToggle.checked) {
+            startUiTicking();
+        } else {
+            // Study Mode is off but a session is still marked as
+            // running in storage — bring the background timer in
+            // sync by pausing it too
+            sessionRunning = false;
 
-            startTimer();
+            await chrome.runtime.sendMessage({
+                type: "PAUSE_FOCUS_TIMER"
+            });
 
+            startSessionButton.textContent = "Resume Session";
+            sessionStatus.textContent = "Paused";
         }
 
-        else {
-
-            startSessionButton.textContent =
-                "Resume Session";
-
-            sessionStatus.textContent =
-                "Paused";
-
-        }
-
+        return;
     }
 
+    // Paused, with time left
+    if (typeof data.remainingSeconds === "number" && data.remainingSeconds > 0) {
+
+        sessionRunning = false;
+        remainingSeconds = data.remainingSeconds;
+
+        updateTimerDisplay(remainingSeconds);
+
+        startSessionButton.textContent = "Resume Session";
+        sessionStatus.textContent = "Paused";
+
+        return;
+    }
+
+    // Fresh state — nothing started yet
+    remainingSeconds = selectedDuration * 60;
+    updateTimerDisplay(remainingSeconds);
 }
 
 
@@ -1759,57 +566,21 @@ function updateModeUI(isEnabled) {
 
     if (isEnabled) {
 
-        modeStatus.textContent =
-            "Currently ON";
-
-
-        // If a session is running,
-        // show Active
-        if (sessionRunning) {
-
-            sessionStatus.textContent =
-                "Active";
-
-        }
-
-        else if (remainingSeconds > 0) {
-
-            sessionStatus.textContent =
-                "Paused";
-
-        }
-
-        else {
-
-            sessionStatus.textContent =
-                "Inactive";
-
-        }
-
-    }
-
-    else {
-
-        modeStatus.textContent =
-            "Currently OFF";
-
+        modeStatus.textContent = "Currently ON";
 
         if (sessionRunning) {
-
-            sessionStatus.textContent =
-                "Paused";
-
+            sessionStatus.textContent = "Active";
+        } else if (remainingSeconds > 0) {
+            sessionStatus.textContent = "Paused";
+        } else {
+            sessionStatus.textContent = "Inactive";
         }
 
-        else {
+    } else {
 
-            sessionStatus.textContent =
-                "Inactive";
-
-        }
-
+        modeStatus.textContent = "Currently OFF";
+        sessionStatus.textContent = sessionRunning ? "Paused" : "Inactive";
     }
-
 }
 
 
@@ -1819,200 +590,121 @@ function updateModeUI(isEnabled) {
 
 async function addWebsite() {
 
-    let website =
-        websiteInput.value
-            .trim()
-            .toLowerCase();
-
+    let website = websiteInput.value.trim().toLowerCase();
 
     if (!website) {
-
         return;
-
     }
 
-
     // Remove http:// or https://
-    website =
-        website.replace(
-            /^https?:\/\//,
-            ""
-        );
-
+    website = website.replace(/^https?:\/\//, "");
 
     // Remove www.
-    website =
-        website.replace(
-            /^www\./,
-            ""
-        );
-
+    website = website.replace(/^www\./, "");
 
     // Remove everything after /
-    website =
-        website.split("/")[0];
-
+    website = website.split("/")[0];
 
     try {
 
-        const tokenData =
-            await chrome.storage.local.get(
-                "accessToken"
-            );
+        const tokenData = await chrome.storage.local.get("accessToken");
 
-
-        const accessToken =
-            tokenData.accessToken;
-
-
-        if (!accessToken) {
-
-            alert(
-                "Please login first."
-            );
-
+        if (!tokenData.accessToken) {
+            alert("Please login first.");
             return;
-
         }
 
-
-        const response =
-            await fetch(
-                `${API_BASE_URL}/api/websites/add/`,
-                {
-
-                    method: "POST",
-
-                    headers: {
-
-                        "Content-Type":
-                            "application/json",
-
-                        "Authorization":
-                            `Bearer ${accessToken}`
-
-                    },
-
-                    body: JSON.stringify({
-
-                        domain:
-                            website
-
-                    })
-
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            alert(
-
-                data.error ||
-
-                "Could not add website."
-
-            );
-
-            return;
-
-        }
-
-
-        const storageData =
-            await chrome.storage.local.get(
-                "blockedWebsites"
-            );
-
-
-        const websites =
-            storageData.blockedWebsites || [];
-
-
-        if (
-            !websites.includes(
-                data.domain
-            )
-        ) {
-
-            websites.push(
-                data.domain
-            );
-
-        }
-
-
-        await chrome.storage.local.set({
-
-            blockedWebsites:
-                websites
-
+        const response = await apiFetch("/api/websites/add/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ domain: website })
         });
 
+        const data = await response.json();
+
+        if (response.status === 401) {
+            alert("Session expired. Please login again.");
+            await logoutAndShowAuthPrompt();
+            return;
+        }
+
+        if (!response.ok) {
+            alert(data.error || "Could not add website.");
+            return;
+        }
+
+        const storageData = await chrome.storage.local.get("blockedWebsites");
+        const websites = storageData.blockedWebsites || [];
+
+        if (!websites.includes(data.domain)) {
+            websites.push(data.domain);
+        }
+
+        await chrome.storage.local.set({ blockedWebsites: websites });
 
         websiteInput.value = "";
 
-
-        displayWebsites(
-            websites
-        );
-
+        displayWebsites(websites);
 
     } catch (error) {
-
-        console.error(
-            "Add website error:",
-            error
-        );
-
-
-        alert(
-            "Could not connect to Django server."
-        );
-
+        console.error("Add website error:", error);
+        alert("Could not connect to the server.");
     }
-
 }
 
 
 // ==============================
 // REMOVE WEBSITE
 // ==============================
+// NEW: this now actually calls the backend to deactivate the
+// domain. Before, this only touched local storage, so the
+// website came right back on the next sync from Django.
 
 async function removeWebsite(index) {
 
-    const data =
-        await chrome.storage.local.get(
-            "blockedWebsites"
-        );
+    const data = await chrome.storage.local.get("blockedWebsites");
+    const websites = data.blockedWebsites || [];
 
+    const domain = websites[index];
 
-    const websites =
-        data.blockedWebsites || [];
+    if (!domain) {
+        return;
+    }
 
+    try {
 
-    websites.splice(
-        index,
-        1
-    );
+        const response = await apiFetch("/api/websites/remove/", {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ domain: domain })
+        });
 
+        if (response.status === 401) {
+            alert("Session expired. Please login again.");
+            await logoutAndShowAuthPrompt();
+            return;
+        }
 
-    await chrome.storage.local.set({
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            alert(errorData.error || "Could not remove website.");
+            return;
+        }
 
-        blockedWebsites:
-            websites
+        websites.splice(index, 1);
 
-    });
+        await chrome.storage.local.set({ blockedWebsites: websites });
 
+        displayWebsites(websites);
 
-    displayWebsites(
-        websites
-    );
-
+    } catch (error) {
+        console.error("Remove website error:", error);
+        alert("Could not connect to the server.");
+    }
 }
 
 
@@ -2023,88 +715,35 @@ async function removeWebsite(index) {
 function displayWebsites(websites) {
 
     websiteList.innerHTML = "";
-
-
-    blockedCount.textContent =
-        websites.length;
-
+    blockedCount.textContent = websites.length;
 
     if (websites.length === 0) {
 
-        const emptyMessage =
-            document.createElement("li");
+        const emptyMessage = document.createElement("li");
+        emptyMessage.className = "empty-message";
+        emptyMessage.textContent = "No blocked websites";
 
-
-        emptyMessage.className =
-            "empty-message";
-
-
-        emptyMessage.textContent =
-            "No blocked websites";
-
-
-        websiteList.appendChild(
-            emptyMessage
-        );
-
-
+        websiteList.appendChild(emptyMessage);
         return;
-
     }
 
+    websites.forEach((website, index) => {
 
-    websites.forEach(
-        (website, index) => {
+        const li = document.createElement("li");
 
-            const li =
-                document.createElement("li");
+        const domainText = document.createElement("span");
+        domainText.textContent = website;
 
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "Remove";
 
-            const domainText =
-                document.createElement("span");
+        removeButton.addEventListener("click", () => {
+            removeWebsite(index);
+        });
 
+        li.appendChild(domainText);
+        li.appendChild(removeButton);
 
-            domainText.textContent =
-                website;
-
-
-            const removeButton =
-                document.createElement("button");
-
-
-            removeButton.textContent =
-                "Remove";
-
-
-            removeButton.addEventListener(
-                "click",
-                () => {
-
-                    removeWebsite(
-                        index
-                    );
-
-                }
-            );
-
-
-            li.appendChild(
-                domainText
-            );
-
-
-            li.appendChild(
-                removeButton
-            );
-
-
-            websiteList.appendChild(
-                li
-            );
-
-        }
-    );
-
+        websiteList.appendChild(li);
+    });
 }
-
-

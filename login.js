@@ -16,8 +16,9 @@ loginForm.addEventListener("submit", async (event) => {
     }
 
     try {
+
         const response = await fetch(
-            "http://127.0.0.1:8000/api/auth/login/",
+            `${API_BASE_URL}/api/auth/login/`,
             {
                 method: "POST",
                 headers: {
@@ -55,10 +56,7 @@ loginForm.addEventListener("submit", async (event) => {
             successMessage.textContent = "Login successful! Closing this tab...";
         }
 
-        // The extension popup can't be force-opened from a regular tab
-        // (Chrome blocks that for security), so we close this tab instead.
-        // Next time the user clicks the extension icon, checkAuthAndLoad()
-        // in popup.js will see the saved token and show the dashboard.
+
         setTimeout(() => {
             window.close();
         }, 1200);

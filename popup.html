@@ -180,7 +180,9 @@
 
     </div>
 
-
+    <!-- NEW: config.js must load before popup.js — it defines
+         API_BASE_URL and the apiFetch() helper that popup.js uses -->
+    <script src="config.js"></script>
     <script src="popup.js"></script>
 
 </body>
